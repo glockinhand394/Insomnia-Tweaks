@@ -1,0 +1,65 @@
+name: Close Discussion on PR Merge
+
+on:
+  pull_request_target: 
+    types: [closed]
+
+
+jobs:
+  closeDiscussion:
+    runs-on: ubuntu-latest
+    permissions: 
+      discussions: write
+      contents: read
+    steps:
+      - name: Check if PR was merged
+        if: github.event.pull_request.merged == true
+        run: echo "PR was merged"
+
+      - name: Extract Discussion Number & Close If any Were Found
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        if: github.event.pull_request.merged == true
+        id: extract-discussion
+        run: |
+          pr_body="$PR_BODY"
+          discussion_ids=$(echo "$pr_body" | grep -oP '(?i)(resolve|fix|close)[s|d]? #\K[0-9]+')
+
+          if [ -z "$discussion_ids" ]; then
+            echo "No discussion IDs found."
+            exit 0
+          fi
+
+          for discussion_id in $discussion_ids; do
+            echo "Attempting to close discussion #$discussion_id"
+            lookup_payload=$(jq -nc \
+              --arg owner "${GITHUB_REPOSITORY%/*}" \
+              --arg name "${GITHUB_REPOSITORY#*/}" \
+              --argjson number "$discussion_id" \
+              '{query: "query($owner: String!, $name: String!, $number: Int!) { repository(owner: $owner, name: $name) { discussion(number: $number) { id } } }", variables: {owner: $owner, name: $name, number: $number}}')
+            if ! response=$(curl --fail-with-body -sS -X POST -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" --data "$lookup_payload" "$GITHUB_API_URL/graphql"); then
+              echo "Warning: Failed to look up discussion #$discussion_id. Response: $response"
+              continue
+            fi
+            if ! discussion_node_id=$(echo "$response" | jq -er 'select(.errors == null) | .data.repository.discussion.id | select(type == "string" and length > 0)'); then
+              echo "Warning: Failed to look up discussion #$discussion_id. Response: $response"
+              continue
+            fi
+
+            close_payload=$(jq -nc --arg id "$discussion_node_id" \
+              '{query: "mutation($id: ID!) { closeDiscussion(input: {discussionId: $id}) { discussion { closed } } }", variables: {id: $id}}')
+            if ! response=$(curl --fail-with-body -sS -X POST -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" --data "$close_payload" "$GITHUB_API_URL/graphql"); then
+              echo "Warning: Failed to close discussion #$discussion_id. Response: $response"
+              continue
+            fi
+            if echo "$response" | jq -e '.errors == null and .data.closeDiscussion.discussion.closed == true' > /dev/null; then
+              echo "Successfully closed discussion #$discussion_id"
+            else
+              echo "Warning: Failed to close discussion #$discussion_id. Response: $response"
+            fi
+          done
+        shell: bash
+        continue-on-error: true

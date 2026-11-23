@@ -1,66 +1,58 @@
-# 🌙 Insomnia Windows Utility
+# 🌙 Insomnia Tweaks
 
-A Windows optimisation and management tool built by **Insomnia**.
+An Insomnia-branded Windows setup, maintenance and optimisation toolbox based on the open-source Chris Titus Tech Windows Utility.
 
-Insomnia Windows Utility brings useful Windows tools, tweaks, app installation, maintenance and gaming optimisations together in one simple interface.
+The original WinUtil workflows are retained and customised with Insomnia branding, a purple theme (`#A75ED6`), an **Insomnia Twerks** tab label, and support for the repository's `insomnia.png` logo.
 
-## ✨ Features
+## Features
 
-- **App Installer** – Install useful Windows applications.
-- **Windows Tweaks** – Customise Windows settings and remove unwanted features.
-- **Configuration** – Quick access to useful Windows configuration options.
-- **Windows Updates** – Check for and manage Windows updates.
-- **Repair Tools** – Run SFC, DISM and other Windows repair commands.
-- **Cleanup** – Remove temporary files and free up storage.
-- **Gaming** – Access gaming optimisations and Windows Game Mode.
-- **System Information** – View CPU, GPU, RAM and disk information.
+- **Install** — browse, search, select, install, uninstall and upgrade applications.
+- **Insomnia Twerks** — use the built-in Windows tweak catalogue and presets.
+- **Config** — access Windows configuration and troubleshooting tools.
+- **Updates** — configure Windows Update behaviour.
+- **Win11 Creator** — use the included Windows installation media creation workflow.
+- **Appx** — manage supported built-in Windows apps.
+- Original application catalogue, tweak definitions, configuration data and supporting functions.
 
-## 🎨 Design
+## Repository layout
 
-- Insomnia purple theme (`#A75ED6`)
-- Dark interface
-- Simple tab-based navigation
-- Built with PowerShell and Windows Presentation Foundation (WPF)
+Keep the logo file in the repository root:
 
-## 💻 Requirements
-
-- Windows 10 or Windows 11
-- PowerShell 5.1 or newer
-- Administrator permissions for certain features
-- Internet connection for application installation
-
-## 🚀 Installation
-
-### Option 1 – Run locally
-
-1. Download `InsomniaWindowsUtility.ps1`.
-2. Open PowerShell in the downloaded file's folder.
-3. Run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\InsomniaWindowsUtility.ps1
+```text
+Insomnia-Tweaks/
+├── insomnia.png
+├── InsomniaTweaks.ps1
+├── Compile.ps1
+├── scripts/
+├── functions/
+├── config/
+└── xaml/
 ```
 
-### Option 2 – Run using a command
+`insomnia.png` is loaded for the navigation logo and application window icon. If it is missing, the original vector logo is used as a fallback.
 
-Once the script is hosted at a publicly accessible raw GitHub URL:
+## Run
+
+Open PowerShell as Administrator in this repository folder, then run:
 
 ```powershell
-irm https://raw.githubusercontent.com/glockinhand394/Insomnia-Tweaks/main/InsomniaWindowsUtility.ps1 | iex
+powershell -ExecutionPolicy Bypass -File .\InsomniaTweaks.ps1
 ```
 
-**Note:** The repository or file must be publicly accessible for this command to work without authentication.
+The launcher runs `Compile.ps1` to build the customised single-file `winutil.ps1`, then starts it. You can also build manually with:
 
-## ⚠️ Disclaimer
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Compile.ps1
+```
 
-- Some features require administrator permissions.
-- Create a restore point before making significant Windows changes.
-- Review changes before applying them.
-- Use this utility at your own risk.
+## Important
 
-## 🌙 Insomnia
+This utility makes system-level Windows changes. Review selected tweaks before applying them, create a restore point, and make sure you understand the effect of each operation. Some features require Administrator permissions and an internet connection.
 
-Developed by **Insomnia**.
+## Credits and licence
 
-GitHub: https://github.com/glockinhand394/
+This project is based on [Chris Titus Tech's WinUtil](https://github.com/ChrisTitusTech/winutil).
 
+The upstream project is distributed under the MIT License. Its original `LICENSE` file and copyright notice are retained in this repository. The upstream code and its contributors remain credited to their original authors. Insomnia-specific modifications are separate customisations.
+
+See [LICENSE](LICENSE) for the full licence text.
