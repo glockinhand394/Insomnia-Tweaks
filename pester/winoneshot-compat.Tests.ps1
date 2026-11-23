@@ -265,7 +265,7 @@ BeforeAll {
         )
 
         try {
-            $catalog = $Json | ConvertFrom-Json -NoEnumerate -ErrorAction Stop
+            $catalog = $Json | ConvertFrom-Json -ErrorAction Stop
         } catch {
             return "WinOneShot cannot parse ${Name}: $_"
         }

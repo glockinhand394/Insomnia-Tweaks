@@ -10,8 +10,8 @@ function Invoke-WPFOOSU {
             param($percent, $totalBytes)
 
             # The server may omit Content-Length, in which case only the percentage is known
-            $progress = if ($totalBytes -gt 0) {
-                "$percent% of $([math]::Round($totalBytes / 1MB)) MB"
+            $progress = if ($null -ne $totalBytes -and [long]$totalBytes -gt 0) {
+                "$percent% of $([math]::Round([long]$totalBytes / 1MB)) MB"
             } else {
                 "$percent%"
             }
