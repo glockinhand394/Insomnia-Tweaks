@@ -46,7 +46,7 @@ powershell -ExecutionPolicy Bypass -File .\InsomniaWindowsUtility.ps1
 Once the script is hosted at a publicly accessible raw GitHub URL:
 
 ```powershell
-irm https://raw.githubusercontent.com/glockinhand394/insomnia-multitool/main/InsomniaWindowsUtility.ps1 | iex
+irm https://raw.githubusercontent.com/glockinhand394/Insomnia-Tweaks/main/InsomniaWindowsUtility.ps1 | iex
 ```
 
 **Note:** The repository or file must be publicly accessible for this command to work without authentication.
